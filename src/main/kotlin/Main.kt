@@ -25,7 +25,7 @@ class DayScope {
 
 suspend fun executeDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
     println("-- Day $dayNumber: $dayTitle --")
-    val dayInput = retrieveInput(dayNumber)
+    val dayInput = InputRetriever().retrieveInput(dayNumber)
 
     println("Input: ${dayInput.getInputLines()}")
 
