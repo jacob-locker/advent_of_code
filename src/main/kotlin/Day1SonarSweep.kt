@@ -28,9 +28,7 @@ fun sweepListSlidingWindow(levels: List<Int>) : Int {
 }
 
 fun parseDay1Input(input: String) : List<Int> {
-    val lines = input.split("\r\n")
-
-    println("Input: $lines")
+    val lines = input.getInputLines()
 
     return lines.map { it.toInt() }
 }
