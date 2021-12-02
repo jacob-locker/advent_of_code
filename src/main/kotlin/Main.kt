@@ -1,3 +1,5 @@
+import day2.dive
+import day2.diveWithAim
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
@@ -23,7 +25,7 @@ class DayScope {
     }
 }
 
-suspend fun executeDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
+fun executeDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
     println("-- Day $dayNumber: $dayTitle --")
     val dayInput = InputRetriever().retrieveInput(dayNumber)
 
