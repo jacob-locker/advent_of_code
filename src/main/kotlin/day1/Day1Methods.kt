@@ -1,3 +1,7 @@
+package day1
+
+import getInputLines
+
 fun parseDay1Input(input: String) : List<Int> {
     val lines = input.getInputLines()
 

@@ -2,8 +2,6 @@ package day1
 
 import InputRetriever
 import org.junit.Test
-import sweepList
-import sweepListSlidingWindow
 import kotlin.test.assertEquals
 
 class Day1Test {

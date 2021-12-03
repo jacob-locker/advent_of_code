@@ -1,16 +1,25 @@
+import day1.sweepList
+import day1.sweepListSlidingWindow
 import day2.dive
 import day2.diveWithAim
+import day3.lifeSupportRating
+import day3.powerConsumption
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    executeDay(1, "Sonar Scan") {
-        method { sweepList(it) }
-        method { sweepListSlidingWindow(it) }
+    printDay(1, "Sonar Scan") {
+        printPart { sweepList(it) }
+        printPart { sweepListSlidingWindow(it) }
     }
 
-    executeDay(2, "Dive!") {
-        method { dive(it) }
-        method { diveWithAim(it) }
+    printDay(2, "Dive!") {
+        printPart { dive(it) }
+        printPart { diveWithAim(it) }
+    }
+
+    printDay(3, "Binary Diagnostic") {
+        printPart { powerConsumption(it) }
+        printPart { lifeSupportRating(it) }
     }
 }
 
@@ -20,12 +29,12 @@ class DayScope {
 
     private val _parts = mutableListOf<((String) -> Any)>()
 
-    fun method(partMethod: ((String) -> Any)) {
+    fun printPart(partMethod: ((String) -> Any)) {
         _parts.add(partMethod)
     }
 }
 
-fun executeDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
+fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
     println("-- Day $dayNumber: $dayTitle --")
     val dayInput = InputRetriever().retrieveInput(dayNumber)
 
