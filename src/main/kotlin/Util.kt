@@ -1,1 +1,1 @@
-fun String.getInputLines() = split("\r\n")
+fun String.getInputLines() = split(System.lineSeparator())

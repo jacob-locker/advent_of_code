@@ -5,8 +5,8 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class Day3Test {
-    val simpleInput = InputRetriever().retrieveInput(3, test = true)
-    val fullInput = InputRetriever().retrieveInput(3)
+    private val simpleInput = InputRetriever().retrieveInput(3, test = true)
+    private val fullInput = InputRetriever().retrieveInput(3)
 
     @Test
     fun `part one simple`() {

@@ -4,6 +4,8 @@ import day2.dive
 import day2.diveWithAim
 import day3.lifeSupportRating
 import day3.powerConsumption
+import day4.findLastWinningScore
+import day4.findWinningScore
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
@@ -20,6 +22,11 @@ fun main() = runBlocking {
     printDay(3, "Binary Diagnostic") {
         printPart { powerConsumption(it) }
         printPart { lifeSupportRating(it) }
+    }
+
+    printDay(4, "Giant Squid") {
+        printPart { findWinningScore(it) }
+        printPart { findLastWinningScore(it) }
     }
 }
 
