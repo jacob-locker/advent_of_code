@@ -2,14 +2,9 @@ package day1
 
 import getInputLines
 
-fun parseDay1Input(input: String) : List<Int> {
-    val lines = input.getInputLines()
+fun solveDay1(input: String, solver: (List<Int>) -> Int) = input.getInputLines().map { it.toInt() }.let(solver)
 
-    return lines.map { it.toInt() }
-}
-
-fun sweepList(input: String) = sweepList(parseDay1Input(input))
-fun sweepList(levels: List<Int>) =
+fun sweepList(input: String) = solveDay1(input) { levels ->
     levels.foldIndexed(0) { index, acc, currentValue ->
         acc + if (index > 0 && currentValue > levels[index - 1]) {
             1
@@ -17,9 +12,9 @@ fun sweepList(levels: List<Int>) =
             0
         }
     }
+}
 
-fun sweepListSlidingWindow(input: String) = sweepListSlidingWindow(parseDay1Input(input))
-fun sweepListSlidingWindow(levels: List<Int>) : Int {
+fun sweepListSlidingWindow(input: String) = solveDay1(input) { levels ->
     var count = 0
     var previousSum : Int? = null
     levels.windowed(3) {
@@ -30,5 +25,5 @@ fun sweepListSlidingWindow(levels: List<Int>) : Int {
         previousSum = sum
     }
 
-    return count
+    count
 }

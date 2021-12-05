@@ -1,14 +1,12 @@
 package day3
 
 import getInputLines
-import java.lang.Byte.parseByte
 import java.lang.Integer.parseInt
 
-fun parseDay3Input(input: String) = input.getInputLines()
+fun solveDay3(input: String, solver: (List<String>) -> Int) = solver(input.getInputLines())
 
-fun powerConsumption(input: String) = powerConsumption(parseDay3Input(input))
-fun powerConsumption(input: List<String>) : Int {
-    val bitCount = getBitCount(input)
+fun powerConsumption(input: String) = solveDay3(input) { lines ->
+    val bitCount = getBitCount(lines)
 
     val gammaBuilder = StringBuilder("")
     val epsilonBuilder = StringBuilder("")
@@ -19,19 +17,18 @@ fun powerConsumption(input: List<String>) : Int {
     val gamma = parseInt(gammaBuilder.toString(), 2)
     val epsilon = parseInt(epsilonBuilder.toString(), 2)
 
-    return gamma * epsilon
+    gamma * epsilon
 }
 
-fun lifeSupportRating(input: String) = lifeSupportRating(parseDay3Input(input))
-fun lifeSupportRating(input: List<String>) : Int {
-    val bitCount = getBitCount(input)
-    val oxygenRating = findRating(input, bitCount) { if (it >= 0) '1' else '0' }
-    val co2Rating = findRating(input, bitCount) { if (it >= 0) '0' else '1' }
+fun lifeSupportRating(input: String) = solveDay3(input) { lines ->
+    val bitCount = getBitCount(lines)
+    val oxygenRating = findRating(lines, bitCount) { if (it >= 0) '1' else '0' }
+    val co2Rating = findRating(lines, bitCount) { if (it >= 0) '0' else '1' }
 
-    return oxygenRating * co2Rating
+    oxygenRating * co2Rating
 }
 
-fun getBitCount(input: List<String>) : List<Int> {
+internal fun getBitCount(input: List<String>) : List<Int> {
     val bitCount = MutableList(input[0].length) { 0 }
     input.forEach { binaryString ->
         binaryString.forEachIndexed { bitPosition, value ->
@@ -41,7 +38,7 @@ fun getBitCount(input: List<String>) : List<Int> {
     return bitCount
 }
 
-fun findRating(input: List<String>, bitCount: List<Int>, bitFilter: (Int) -> Char) : Int {
+internal fun findRating(input: List<String>, bitCount: List<Int>, bitFilter: (Int) -> Char) : Int {
     var filteredList: List<String> = input
 
     bitCount.forEachIndexed { bitPosition, count ->

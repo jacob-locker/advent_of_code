@@ -1,26 +1,26 @@
 package day4
 
-fun parseDay4Input(input: String) : Pair<List<Int>, List<Board>> {
+fun solveDay4(input: String, solver: (List<Int>, List<Board>) -> Int) : Int {
     val splitInput = input.split("\r\n\r\n")
-    return Pair(splitInput[0].replace(System.lineSeparator(), "").parseNumberStream(), splitInput.slice(1 until splitInput.size).parseBoards())
+    val pair = Pair(splitInput[0].replace(System.lineSeparator(), "").parseNumberStream(),
+        splitInput.slice(1 until splitInput.size).parseBoards())
+    return solver(pair.first, pair.second)
 }
 
-fun findWinningScore(input: String) = parseDay4Input(input).let { findWinningScore(it.first, it.second) }
-fun findWinningScore(bingoNumbers: List<Int>, boards: List<Board>): Int {
+fun findWinningScore(input: String) = solveDay4(input) { bingoNumbers, boards ->
     bingoNumbers.forEach { number ->
         boards.forEach { board ->
             val result = board.markNumber(number)
             if (result is WinResult) {
-                return result.score
+                return@solveDay4 result.score
             }
         }
     }
 
-    return -1
+    -1
 }
 
-fun findLastWinningScore(input: String) = parseDay4Input(input).let { findLastWinningScore(it.first, it.second) }
-fun findLastWinningScore(bingoNumbers: List<Int>, boards: List<Board>): Int {
+fun findLastWinningScore(input: String) = solveDay4(input) { bingoNumbers, boards ->
     var lastWinningScore = -1
     val winningBoards = HashSet<Board>()
     bingoNumbers.forEach { number ->
@@ -34,5 +34,5 @@ fun findLastWinningScore(bingoNumbers: List<Int>, boards: List<Board>): Int {
             }
         }
     }
-    return lastWinningScore
+    lastWinningScore
 }
