@@ -7,6 +7,7 @@ import day3.powerConsumption
 import day4.findLastWinningScore
 import day4.findWinningScore
 import day5.findNumberOfPointsWithLineOverlap
+import day6.getNumberOfLanternFish
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
@@ -33,6 +34,11 @@ fun main() = runBlocking {
     printDay(5, "Hydrothermal Venture") {
         printPart { findNumberOfPointsWithLineOverlap(it) }
         printPart { findNumberOfPointsWithLineOverlap(it, ignoresDiagonals = false) }
+    }
+
+    printDay(6, "Lanternfish") {
+        printPart { getNumberOfLanternFish(it) }
+        printPart { getNumberOfLanternFish(it, numberOfDays = 256) }
     }
 }
 
