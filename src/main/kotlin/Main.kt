@@ -1,3 +1,14 @@
+import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
 import day1.sweepList
 import day1.sweepListSlidingWindow
 import day2.dive
@@ -8,37 +19,63 @@ import day4.findLastWinningScore
 import day4.findWinningScore
 import day5.findNumberOfPointsWithLineOverlap
 import day6.getNumberOfLanternFish
+import day7.Heuristic
+import day7.minFuelCostToAlignCrabs
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDate
+import java.time.YearMonth
 
-fun main() = runBlocking {
-    printDay(1, "Sonar Scan") {
-        printPart { sweepList(it) }
-        printPart { sweepListSlidingWindow(it) }
+fun main() = application {
+    Window(onCloseRequest = ::exitApplication) {
+        App()
+        printDay(1, "Sonar Scan") {
+            printPart { sweepList(it) }
+            printPart { sweepListSlidingWindow(it) }
+        }
+
+        printDay(2, "Dive!") {
+            printPart { dive(it) }
+            printPart { diveWithAim(it) }
+        }
+
+        printDay(3, "Binary Diagnostic") {
+            printPart { powerConsumption(it) }
+            printPart { lifeSupportRating(it) }
+        }
+
+        printDay(4, "Giant Squid") {
+            printPart { findWinningScore(it) }
+            printPart { findLastWinningScore(it) }
+        }
+
+        printDay(5, "Hydrothermal Venture") {
+            printPart { findNumberOfPointsWithLineOverlap(it) }
+            printPart { findNumberOfPointsWithLineOverlap(it, ignoresDiagonals = false) }
+        }
+
+        printDay(6, "Lanternfish") {
+            printPart { getNumberOfLanternFish(it) }
+            printPart { getNumberOfLanternFish(it, numberOfDays = 256) }
+        }
+
+        printDay(7, "The Treachery of Whales") {
+            printPart { minFuelCostToAlignCrabs(it) }
+            printPart { minFuelCostToAlignCrabs(it, heuristic = Heuristic.CrabFuelCost) }
+        }
     }
+}
 
-    printDay(2, "Dive!") {
-        printPart { dive(it) }
-        printPart { diveWithAim(it) }
-    }
+@Composable
+@Preview
+fun App() {
+    var text = remember { mutableStateOf("Hello, World!") }
 
-    printDay(3, "Binary Diagnostic") {
-        printPart { powerConsumption(it) }
-        printPart { lifeSupportRating(it) }
-    }
-
-    printDay(4, "Giant Squid") {
-        printPart { findWinningScore(it) }
-        printPart { findLastWinningScore(it) }
-    }
-
-    printDay(5, "Hydrothermal Venture") {
-        printPart { findNumberOfPointsWithLineOverlap(it) }
-        printPart { findNumberOfPointsWithLineOverlap(it, ignoresDiagonals = false) }
-    }
-
-    printDay(6, "Lanternfish") {
-        printPart { getNumberOfLanternFish(it) }
-        printPart { getNumberOfLanternFish(it, numberOfDays = 256) }
+    MaterialTheme {
+//        Button(onClick = {
+//            text.value = "Hello, Desktop!"
+//        }) {
+//            Text(text.value)
+//        }
     }
 }
 
