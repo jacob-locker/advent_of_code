@@ -60,7 +60,7 @@ fun main() = application {
 
         printDay(7, "The Treachery of Whales") {
             printPart { minFuelCostToAlignCrabs(it) }
-            printPart { minFuelCostToAlignCrabs(it, heuristic = Heuristic.CrabFuelCost) }
+            printPart { minFuelCostToAlignCrabs(it, heuristic = Heuristic.GaussSum) }
         }
     }
 }

@@ -17,7 +17,11 @@ internal fun getFuelCost(crabPositions: List<Int>, alignPosition: Int, heuristic
 
 object Heuristic {
     private val costMemo = mutableMapOf<Int, Int>()
-    val CrabFuelCost: (Int) -> Int = ::fuelCost
+    val GaussSum: (Int) -> Int = ::gaussSum
+    val RecursiveSum: (Int) -> Int = ::fuelCost
+
+    // As it turns out, this gives the answer mathematically
+    private fun gaussSum(n: Int) = (n * (n + 1)) / 2
 
     private fun fuelCost(n: Int): Int {
         if (costMemo.containsKey(n)) {
