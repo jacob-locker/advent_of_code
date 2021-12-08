@@ -1,12 +1,14 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import day1.sweepList
@@ -21,76 +23,111 @@ import day5.findNumberOfPointsWithLineOverlap
 import day6.getNumberOfLanternFish
 import day7.Heuristic
 import day7.minFuelCostToAlignCrabs
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.awt.Dimension
 import java.time.LocalDate
 import java.time.YearMonth
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-        printDay(1, "Sonar Scan") {
-            printPart { sweepList(it) }
-            printPart { sweepListSlidingWindow(it) }
-        }
+    Window(title = "Advent of Code 2021", resizable = false, onCloseRequest = ::exitApplication) {
+        this.window.size = Dimension(928, 572)
+        App(retrieveImplementedDays())
+    }
+}
 
-        printDay(2, "Dive!") {
-            printPart { dive(it) }
-            printPart { diveWithAim(it) }
-        }
+var executeDayJob: Job? = null
 
-        printDay(3, "Binary Diagnostic") {
-            printPart { powerConsumption(it) }
-            printPart { lifeSupportRating(it) }
-        }
-
-        printDay(4, "Giant Squid") {
-            printPart { findWinningScore(it) }
-            printPart { findLastWinningScore(it) }
-        }
-
-        printDay(5, "Hydrothermal Venture") {
-            printPart { findNumberOfPointsWithLineOverlap(it) }
-            printPart { findNumberOfPointsWithLineOverlap(it, ignoresDiagonals = false) }
-        }
-
-        printDay(6, "Lanternfish") {
-            printPart { getNumberOfLanternFish(it) }
-            printPart { getNumberOfLanternFish(it, numberOfDays = 256) }
-        }
-
-        printDay(7, "The Treachery of Whales") {
-            printPart { minFuelCostToAlignCrabs(it) }
-            printPart { minFuelCostToAlignCrabs(it, heuristic = Heuristic.GaussSum) }
+@Composable
+@Preview
+fun App(dayObjs: Map<Int, BaseDay>) {
+    MaterialTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                val days = arrayOf("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
+                for (day in days) {
+                    Text(day, style = MaterialTheme.typography.h6, modifier = Modifier.width(128.dp))
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                for (day in 28..30) {
+                    DayLayout(dayObjs[day], day, isEmpty = true)
+                }
+                for (day in 1..4) {
+                    DayLayout(dayObjs[day], day, isEmpty = false)
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                for (day in 5..11) {
+                    DayLayout(dayObjs[day], day, isEmpty = false)
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                for (day in 12..18) {
+                    DayLayout(dayObjs[day], day, isEmpty = false)
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                for (day in 19..25) {
+                    DayLayout(dayObjs[day], day, isEmpty = false)
+                }
+            }
         }
     }
 }
 
 @Composable
-@Preview
-fun App() {
-    var text = remember { mutableStateOf("Hello, World!") }
+fun DayLayout(day: BaseDay?, dayNumber: Int, isEmpty: Boolean = false) {
+    val modifier = Modifier.size(128.dp).padding(top = 2.dp, bottom = 2.dp)
+    val coroutineScope = rememberCoroutineScope()
+    if (day != null) {
+        Button(onClick = {
+            executeDay(coroutineScope, day)
+        }, modifier = modifier) {
+            Text("${day.number}")
+        }
+    } else if (isEmpty) {
+        Button(onClick = {}, enabled = false, modifier = modifier) {
+            Text("$dayNumber")
+        }
+    } else {
+        OutlinedButton(onClick = {}, modifier = modifier) {
+            Text("$dayNumber")
+        }
+    }
+}
 
-    MaterialTheme {
-//        Button(onClick = {
-//            text.value = "Hello, Desktop!"
-//        }) {
-//            Text(text.value)
-//        }
+fun executeDay(coroutineScope: CoroutineScope, day: BaseDay) {
+    executeDayJob?.cancel()
+    executeDayJob = coroutineScope.launch(Dispatchers.Default) {
+        try {
+            printDay(day.number, day.title) {
+                printPart { day.partOne(it) }
+                printPart { day.partTwo(it) }
+            }
+        } catch (e: Exception) {}
     }
 }
 
 class DayScope {
-    val parts : List<((String) -> Any)>
-    get() = _parts
+    val parts: List<suspend ((String) -> Any)>
+        get() = _parts
 
-    private val _parts = mutableListOf<((String) -> Any)>()
+    private val _parts = mutableListOf<suspend ((String) -> Any)>()
 
-    fun printPart(partMethod: ((String) -> Any)) {
+    fun printPart(partMethod: suspend ((String) -> Any)) {
         _parts.add(partMethod)
     }
 }
 
-fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) {
+suspend fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) = coroutineScope {
     println("-- Day $dayNumber: $dayTitle --")
     val dayInput = InputRetriever().retrieveInput(dayNumber)
 
@@ -100,7 +137,7 @@ fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Un
     dayScopeAction.invoke(dayScope)
 
     dayScope.parts.forEachIndexed { index, partMethod ->
-        println("Part ${index + 1} Output: ${partMethod(dayInput)}" )
+        println("Part ${index + 1} Output: ${partMethod(dayInput)}")
     }
     println()
 }

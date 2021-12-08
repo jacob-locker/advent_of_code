@@ -21,6 +21,8 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-RC")
     implementation(compose.desktop.currentOs)
+    implementation("org.slf4j:slf4j-simple:1.6.1")
+    implementation("org.reflections:reflections:0.10.2")
 //    implementation("io.github.boguszpawlowski.composecalendar:composecalendar:0.2.1")
     testImplementation(kotlin("test"))
 }

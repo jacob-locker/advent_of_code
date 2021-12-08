@@ -1,4 +1,3 @@
-
 rootProject.name = "advent_of_code"
 pluginManagement {
     repositories {
