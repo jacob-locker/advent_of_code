@@ -1,7 +1,8 @@
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class BaseDayObjectTest(private val day: BaseDay,
+abstract class BaseDayObjectTest(private val day: BaseDay,
                                 private val partOneSimpleExpected: Any? = null,
                                 private val partOneExpected: Any? = null,
                                 private val partTwoSimpleExpected: Any? = null,
@@ -12,22 +13,30 @@ class BaseDayObjectTest(private val day: BaseDay,
 
     @Test
     fun `part one simple`() {
-        partOneSimpleExpected?.let { assertEquals(it, day.partOne(simpleInput)) }
+        runBlocking {
+            partOneSimpleExpected?.let { assertEquals(it, day.partOne(simpleInput)) }
+        }
     }
 
     @Test
     fun `part one`() {
-        partOneExpected?.let { assertEquals(it, day.partOne(fullInput)) }
+        runBlocking {
+            partOneExpected?.let { assertEquals(it, day.partOne(fullInput)) }
+        }
     }
 
     @Test
     fun `part two simple`() {
-        partTwoSimpleExpected?.let { assertEquals(it, day.partTwo(simpleInput)) }
+        runBlocking {
+            partTwoSimpleExpected?.let { assertEquals(it, day.partTwo(simpleInput)) }
+        }
     }
 
     @Test
     fun `part two`() {
-        partTwoExpected?.let { assertEquals(it, day.partTwo(fullInput)) }
+        runBlocking {
+            partTwoExpected?.let { assertEquals(it, day.partTwo(fullInput)) }
+        }
     }
 
 }

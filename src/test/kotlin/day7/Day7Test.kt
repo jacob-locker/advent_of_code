@@ -1,15 +1,14 @@
 package day7
 
+import BaseDayObjectTest
 import BaseDayTest
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
-class Day7Test : BaseDayTest<Int>(
-    7,
-    partOneMethod = ::minFuelCostToAlignCrabs,
+class Day7Test : BaseDayObjectTest(
+    Day7(),
     partOneSimpleExpected = 37,
     partOneExpected = 353800,
-    partTwoMethod = { minFuelCostToAlignCrabs(it, heuristic = Heuristic.GaussSum) },
     partTwoSimpleExpected = 168,
     partTwoExpected = 98119739
 ) {

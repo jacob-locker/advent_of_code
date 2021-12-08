@@ -1,13 +1,11 @@
 package day6
 
-import BaseDayTest
+import BaseDayObjectTest
 
-class Day6Test : BaseDayTest<Long>(
-    6,
-    partOneMethod = ::getNumberOfLanternFish,
-    partOneSimpleExpected = 5934,
-    partOneExpected = 353079,
-    partTwoMethod = { getNumberOfLanternFish(it, numberOfDays = 256) },
-    partTwoSimpleExpected = 26984457539,
-    partTwoExpected = 1605400130036
+class Day6Test : BaseDayObjectTest(
+    Day6(),
+    partOneSimpleExpected = 5934L,
+    partOneExpected = 353079L,
+    partTwoSimpleExpected = 26984457539L,
+    partTwoExpected = 1605400130036L
 )
