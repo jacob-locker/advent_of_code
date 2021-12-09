@@ -25,7 +25,11 @@ class DayRetriever {
     }
 
     suspend fun retrieveInputRemotely(day: Int) : String {
-        val service = createAocService()
-        return service.fetchDayInput(day = day)
+        javaClass.getResource("login.txt")?.readText()?.let {
+            val service = createAocService(it)
+            return service.fetchDayInput(day = day)
+        }
+
+        return ""
     }
 }

@@ -17,7 +17,7 @@ interface AocService {
     suspend fun fetchDayInput(@Path("year") year: Int = 2021, @Path("day") day: Int) : String
 }
 
-fun createAocService(loginCookie: String = "_ga=GA1.2.212516361.1638466956; _gid=GA1.2.809596380.1638800516; session=53616c7465645f5fd75083f0bd8562a46259611f6bc9b05be347558f7939c62131389cb6cd2241dfb92d71ccb4450858"): AocService {
+fun createAocService(loginCookie: String): AocService {
     val httpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val original = chain.request()
