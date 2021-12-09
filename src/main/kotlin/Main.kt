@@ -2,31 +2,14 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import day1.sweepList
-import day1.sweepListSlidingWindow
-import day2.dive
-import day2.diveWithAim
-import day3.lifeSupportRating
-import day3.powerConsumption
-import day4.findLastWinningScore
-import day4.findWinningScore
-import day5.findNumberOfPointsWithLineOverlap
-import day6.getNumberOfLanternFish
-import day7.Heuristic
-import day7.minFuelCostToAlignCrabs
 import kotlinx.coroutines.*
 import java.awt.Dimension
-import java.time.LocalDate
-import java.time.YearMonth
 
 fun main() = application {
     Window(title = "Advent of Code 2021", resizable = false, onCloseRequest = ::exitApplication) {
@@ -129,7 +112,7 @@ class DayScope {
 
 suspend fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.() -> Unit) = coroutineScope {
     println("-- Day $dayNumber: $dayTitle --")
-    val dayInput = InputRetriever().retrieveInput(dayNumber)
+    val dayInput = DayRetriever().retrieveInput(dayNumber)
 
     println("Input: ${dayInput.getInputLines()}")
 
