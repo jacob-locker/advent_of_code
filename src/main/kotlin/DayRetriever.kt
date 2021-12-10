@@ -10,26 +10,26 @@ class DayRetriever {
 
         if (input == null) {
             println("Could not find or read file $resource")
-            val dirString = "src/main/resources/day$day"
-            val dir = File(File(dirString).absolutePath)
-            if (!dir.exists()) {
-                dir.mkdir()
-            }
-
-            val inputAsString = retrieveInputRemotely(day)
-            File("$dirString/input.txt").writer().use { it.write(inputAsString) }
-            return inputAsString
+//            val dirString = "src/main/resources/day$day"
+//            val dir = File(File(dirString).absolutePath)
+//            if (!dir.exists()) {
+//                dir.mkdir()
+//            }
+//
+//            val inputAsString = retrieveInputRemotely(day)
+//            File("$dirString/input.txt").writer().use { it.write(inputAsString) }
+//            return inputAsString
         }
 
-        return input.readText()
+        return input!!.readText()
     }
 
-    suspend fun retrieveInputRemotely(day: Int) : String {
-        javaClass.getResource("login.txt")?.readText()?.let {
-            val service = createAocService(it)
-            return service.fetchDayInput(day = day)
-        }
-
-        return ""
-    }
+//    suspend fun retrieveInputRemotely(day: Int) : String {
+//        javaClass.getResource("login.txt")?.readText()?.let {
+//            val service = createAocService(it)
+//            return service.fetchDayInput(day = day)
+//        }
+//
+//        return ""
+//    }
 }

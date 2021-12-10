@@ -114,7 +114,7 @@ suspend fun printDay(dayNumber: Int, dayTitle: String, dayScopeAction: DayScope.
     println("-- Day $dayNumber: $dayTitle --")
     val dayInput = DayRetriever().retrieveInput(dayNumber)
 
-    println("Input: ${dayInput.getInputLines()}")
+    //println("Input: ${dayInput.getInputLines()}")
 
     val dayScope = DayScope()
     dayScopeAction.invoke(dayScope)
