@@ -1,30 +1,14 @@
 package day3
 
+import BaseDayObjectTest
 import DayRetriever
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class Day3Test {
-//    private val simpleInput = DayRetriever().retrieveInput(3, test = true)
-//    private val fullInput = DayRetriever().retrieveInput(3)
-//
-//    @Test
-//    fun `part one simple`() {
-//        assertEquals(198, powerConsumption(simpleInput))
-//    }
-//
-//    @Test
-//    fun `part one`() {
-//        assertEquals(3277364, powerConsumption(fullInput))
-//    }
-//
-//    @Test
-//    fun `part two simple`() {
-//        assertEquals(230, lifeSupportRating(simpleInput))
-//    }
-//
-//    @Test
-//    fun `part two`() {
-//        assertEquals(5736383, lifeSupportRating(fullInput))
-//    }
-}
+class Day3Test : BaseDayObjectTest(
+    Day3(),
+    partOneSimpleExpected = 198,
+    partOneExpected = 3277364,
+    partTwoSimpleExpected = 230,
+    partTwoExpected = 5736383
+)

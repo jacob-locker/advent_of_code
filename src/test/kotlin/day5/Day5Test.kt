@@ -1,34 +1,18 @@
 package day5
 
+import BaseDayObjectTest
 import DayRetriever
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class Day5Test {
-//    private val simpleInput = DayRetriever().retrieveInput(5, test = true)
-//    private val fullInput = DayRetriever().retrieveInput(5)
-//
-//    @Test
-//    fun `part one simple`() {
-//        assertEquals(5, findNumberOfPointsWithLineOverlap(simpleInput))
-//    }
-//
-//    @Test
-//    fun `part one`() {
-//        assertEquals(8111, findNumberOfPointsWithLineOverlap(fullInput))
-//    }
-//
-//    @Test
-//    fun `part two simple`() {
-//        assertEquals(12, findNumberOfPointsWithLineOverlap(simpleInput, ignoresDiagonals = false))
-//    }
-//
-//    @Test
-//    fun `part two`() {
-//        assertEquals(22088, findNumberOfPointsWithLineOverlap(fullInput, ignoresDiagonals = false))
-//    }
-
+class Day5Test : BaseDayObjectTest(
+    Day5(),
+    partOneSimpleExpected = 5,
+    partOneExpected = 8111,
+    partTwoSimpleExpected = 12,
+    partTwoExpected = 22088
+) {
     @Test
     fun `ocean floor add right diagonal line top down`() {
         val oceanFloor = OceanFloor(3)
