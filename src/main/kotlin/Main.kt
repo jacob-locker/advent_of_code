@@ -105,8 +105,8 @@ fun VisualizationLayout(viz: DayVisualization, showVisualization: MutableState<B
 
 @Composable
 fun VizOutputLayout(outputFlow: Flow<String>) {
-    val partOneOutput = outputFlow.collectAsState("")
-    Text(text = partOneOutput.value)
+    val output = outputFlow.collectAsState("")
+    Text(style = MaterialTheme.typography.h5, text = output.value)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
