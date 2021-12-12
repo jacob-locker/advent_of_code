@@ -4,7 +4,7 @@ import java.nio.file.Paths
 
 class DayRetriever {
 
-    suspend fun retrieveInput(day: Int, test: Boolean = false) : String {
+    fun retrieveInput(day: Int, test: Boolean = false) : String {
         val resource = if (test) "day$day/test_input.txt" else "day$day/input.txt"
         val input = javaClass.getResource(resource)
 

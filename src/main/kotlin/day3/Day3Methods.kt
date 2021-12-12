@@ -41,7 +41,7 @@ internal fun getBitCount(input: List<String>) : List<Int> {
 internal fun findRating(input: List<String>, bitCount: List<Int>, bitFilter: (Int) -> Char) : Int {
     var filteredList: List<String> = input
 
-    bitCount.forEachIndexed { bitPosition, count ->
+    bitCount.forEachIndexed { bitPosition, _ ->
         if (filteredList.size > 1) {
             filteredList = filteredList.filter { it[bitPosition] == bitFilter(getBitCount(filteredList)[bitPosition]) }
         }

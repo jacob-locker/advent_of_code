@@ -28,11 +28,14 @@ fun List<String>.parseOctopusGrid() = let { rows ->
     OctopusGrid(Array(rows.size) { rowIndex -> IntArray(rows[rowIndex].length) { colIndex -> rows[rowIndex][colIndex].digitToInt() } })
 }
 
-class OctopusGrid(private val grid: Array<IntArray>) {
+class OctopusGrid(private val grid: Array<IntArray>, private var _numberOfFlashes: Long = 0L) {
 
+    val values get() = grid
     val numberOfFlashes
     get() = _numberOfFlashes
-    private var _numberOfFlashes = 0L
+
+    val size
+    get() = grid.size
 
     fun stepTimes(times: Int) = repeat(times) { step() }
 
