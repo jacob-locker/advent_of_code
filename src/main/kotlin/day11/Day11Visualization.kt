@@ -121,8 +121,8 @@ class Day11Visualization : DayVisualization(11) {
                                     modifier = Modifier.size(80.dp).graphicsLayer {
                                         scaleX = intensity
                                         scaleY = intensity
-                                        translationX = -40 * (1F - intensity)
-                                        translationY = -40 * (1F - intensity)
+                                        translationX = -20 * (1F - intensity)
+                                        translationY = -20 * (1F - intensity)
                                     }
                                         .alpha(intensity).zIndex(intensity)) {
                                     //OctopusLayout(octopusGrid.values[row][col])

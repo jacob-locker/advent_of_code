@@ -81,10 +81,10 @@ fun VisualizationLayout(viz: DayVisualization, showVisualization: MutableState<B
 
         if (vizPartOne.value == false) {
             VizOutputLayout(viz.partTwoOutputFlow)
-            viz.VisualizePartTwo(modifier = Modifier.size(width = 800.dp, height = 400.dp))
+            viz.VisualizePartTwo(modifier = Modifier.size(width = 800.dp, height = 800.dp))
         } else {
             VizOutputLayout(viz.partOneOutputFlow)
-            viz.VisualizePartOne(modifier = Modifier.size(width = 800.dp, height = 400.dp))
+            viz.VisualizePartOne(modifier = Modifier.size(width = 800.dp, height = 800.dp))
         }
 
         Row {
