@@ -1,34 +1,27 @@
 package day11
 
 import DayVisualization
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import copy
 import getInputLines
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 
 class Day11Visualization : DayVisualization(11) {
 
@@ -45,7 +38,7 @@ class Day11Visualization : DayVisualization(11) {
 
     override fun startPartOne(input: String, coroutineScope: CoroutineScope) {
         gridJob?.cancel()
-        gridJob = coroutineScope.launch {
+        gridJob = coroutineScope.launch(Dispatchers.Default) {
             var octopusGrid = input.getInputLines().parseOctopusGrid()
             repeat(100) {
                 octopusGrid = OctopusGrid(octopusGrid.values.copy(), octopusGrid.numberOfFlashes)
@@ -60,14 +53,14 @@ class Day11Visualization : DayVisualization(11) {
 
     override fun startPartTwo(input: String, coroutineScope: CoroutineScope) {
         gridJob?.cancel()
-        gridJob = coroutineScope.launch {
+        gridJob = coroutineScope.launch(Dispatchers.Default) {
             var octopusGrid = input.getInputLines().parseOctopusGrid()
             var count = 1
             while(!octopusGrid.allOctopusesAreFlashing()) {
                 octopusGrid = OctopusGrid(octopusGrid.values.copy(), octopusGrid.numberOfFlashes)
                 octopusGrid.step()
                 gridFlow.value = octopusGrid
-                _partTwoOutputFlow.value = "Number of Steps Until All Flashing: ${count++}"
+                _partTwoOutputFlow.value = "Number of Steps: ${count++}"
                 delay(100)
             }
         }
@@ -94,7 +87,12 @@ class Day11Visualization : DayVisualization(11) {
                 repeat(octopusGrid.size) { row ->
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         repeat(octopusGrid.size) { col ->
-                            OctopusLayout(octopusGrid.values[row][col])
+                            val value = octopusGrid.values[row][col]
+                            val intensity = if (value == 0) 1F else 1F - (value / 9F)
+                            Surface(shape = RoundedCornerShape(16.dp), color = Color(0f, 0f, intensity, alpha = intensity), modifier = Modifier.size(80.dp)) {
+                                //OctopusLayout(octopusGrid.values[row][col])
+                            }
+
                         }
                     }
                 }
@@ -106,19 +104,13 @@ class Day11Visualization : DayVisualization(11) {
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun OctopusLayout(value: Int) {
+        val intensity = if (value == 0) 1F else 1F - (value / 9F)
             Surface(
                 shape = CircleShape,
                 modifier = Modifier.graphicsLayer {
-                    //this.alpha = if (value == 0) 1F else value / 36F
-                    this.scaleX = if (value == 0) 1F else value / 9F
-                    this.scaleY = if (value == 0) 1F else value / 9F
-                }.drawWithContent {
-                    val colors = listOf(Color.Blue, Color.Transparent)
-                    drawContent()
-                    drawCircle(
-                        brush = Brush.radialGradient(colors),
-                        blendMode = BlendMode.DstIn
-                    )
+                    this.alpha = 0.5F * intensity
+                    this.scaleX = 0.5F * intensity
+                    this.scaleY = 0.5F * intensity
                 }.size(80.dp),
                 color = Color.Blue
             ) {

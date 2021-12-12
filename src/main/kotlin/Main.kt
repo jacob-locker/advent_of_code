@@ -82,16 +82,22 @@ fun VisualizationLayout(viz: DayVisualization, showVisualization: MutableState<B
         if (vizPartOne.value == false) {
             VizOutputLayout(viz.partTwoOutputFlow)
             viz.VisualizePartTwo(modifier = Modifier.size(width = 800.dp, height = 400.dp))
-            viz.startPartTwo(DayRetriever().retrieveInput(viz.number), coroutineScope)
         } else {
             VizOutputLayout(viz.partOneOutputFlow)
             viz.VisualizePartOne(modifier = Modifier.size(width = 800.dp, height = 400.dp))
-            viz.startPartOne(DayRetriever().retrieveInput(viz.number), coroutineScope)
         }
 
         Row {
-            Button(onClick = { vizPartOne.value = true }) { Text("Part One") }
-            Button(onClick = { vizPartOne.value = false }) { Text("Part Two") }
+            Button(onClick = {
+                viz.startPartOne(DayRetriever().retrieveInput(viz.number), coroutineScope).also {
+                    vizPartOne.value = true
+                }
+            }) { Text("Part One") }
+            Button(onClick = {
+                viz.startPartTwo(DayRetriever().retrieveInput(viz.number), coroutineScope).also {
+                    vizPartOne.value = false
+                }
+            }) { Text("Part Two") }
         }
 
     }
