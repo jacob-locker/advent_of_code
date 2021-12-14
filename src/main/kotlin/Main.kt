@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -70,30 +71,35 @@ fun App(dayObjs: Map<Int, BaseDay>, visualizations: Map<Int, DayVisualization>) 
 }
 
 @Composable
-fun VisualizationLayout(viz: DayVisualization, showVisualization: MutableState<Boolean>) {
+fun VisualizationLayout(title: String, viz: DayVisualization, showVisualization: MutableState<Boolean>) {
     val vizPartOne = remember { mutableStateOf<Boolean?>(null) }
     val coroutineScope = rememberCoroutineScope()
+    val size = 800.dp
 
     Column(modifier = Modifier.border(width = 1.dp, MaterialTheme.colors.primary).padding(8.dp)) {
-        IconButton(modifier = Modifier.align(Alignment.End), onClick = { showVisualization.value = false }) {
-            Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+        Row(modifier = Modifier.width(width = size), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(text = "Day ${viz.number}: $title", style = MaterialTheme.typography.h4)
+            IconButton(onClick = { showVisualization.value = false }) {
+                Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+            }
         }
+
 
         if (vizPartOne.value == false) {
             VizOutputLayout(viz.partTwoOutputFlow)
-            viz.VisualizePartTwo(modifier = Modifier.size(width = 800.dp, height = 800.dp))
+            viz.VisualizePartTwo(modifier = Modifier.size(width = size, height = size))
         } else {
             VizOutputLayout(viz.partOneOutputFlow)
-            viz.VisualizePartOne(modifier = Modifier.size(width = 800.dp, height = 800.dp))
+            viz.VisualizePartOne(modifier = Modifier.size(width = size, height = size))
         }
 
-        Row {
-            Button(onClick = {
+        Row(modifier = Modifier.width(width = size)) {
+            Button(modifier = Modifier.fillMaxWidth(0.5f).padding(start = 8.dp, end = 4.dp), onClick = {
                 viz.startPartOne(DayRetriever().retrieveInput(viz.number), coroutineScope).also {
                     vizPartOne.value = true
                 }
             }) { Text("Part One") }
-            Button(onClick = {
+            Button(modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 8.dp), onClick = {
                 viz.startPartTwo(DayRetriever().retrieveInput(viz.number), coroutineScope).also {
                     vizPartOne.value = false
                 }
@@ -117,7 +123,7 @@ fun DayLayout(day: BaseDay?, viz: DayVisualization?, dayNumber: Int, isEmpty: Bo
     val showVisualization = remember { mutableStateOf(false) }
     if (showVisualization.value && viz != null) {
         UndecoratedWindowAlertDialogProvider.AlertDialog(onDismissRequest = { showVisualization.value = false }) {
-            VisualizationLayout(viz, showVisualization)
+            VisualizationLayout(day?.title ?: viz.number.toString(), viz, showVisualization)
         }
     }
     if (day != null) {
