@@ -6,6 +6,8 @@ import java.util.stream.Collectors.toList
 
 fun String.getInputLines() = split(System.lineSeparator())
 
+fun String.getInputBlocks() = split(System.lineSeparator() + System.lineSeparator())
+
 fun retrieveImplementedDays() : Map<Int, BaseDay> {
     val reflections = Reflections(IntRange(1, 25).map { "day$it" })
     val annotated: Set<Class<*>> = reflections.getSubTypesOf(BaseDay::class.java)

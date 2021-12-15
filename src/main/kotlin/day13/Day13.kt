@@ -37,7 +37,7 @@ fun String.parseInstruction() = split("=").let {
     Instruction(if (it[0].last() == 'x') InstructionType.FOLD_VERTICALLY else InstructionType.FOLD_HORIZONTALLY, it.last().toInt())
 }
 
-class Paper(val points: Set<Pair<Int, Int>>) {
+class Paper(points: Set<Pair<Int, Int>>) {
     private val initialHeight = points.maxOf { it.second } + 1
     private val initialWidth = points.maxOf { it.first } + 1
     private var sheet =
