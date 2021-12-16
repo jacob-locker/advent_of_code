@@ -20,7 +20,7 @@ class Day14 : BaseDay(14, "Extended Polymerization") {
 
     private fun findMaxMinusMin(template: Template, steps: Int) =
         with(template) {
-            repeat(steps) { step -> applyRules().also { println("Step $step") } }
+            repeat(steps) { applyRules() }
             elementQuantities.let { freqMap ->
                 freqMap.maxOf { it.value } - freqMap.minOf { it.value }
             }

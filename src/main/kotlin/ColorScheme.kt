@@ -38,6 +38,10 @@ enum class ColorScheme(val displayName: String, val colors: List<Color>) {
         ).reversed()
     );
 
+    companion object {
+        val DEFAULT = WHITE_BLUE_GREY_BLK
+    }
+
     override fun toString(): String {
         return displayName
     }

@@ -1,16 +1,36 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 abstract class DayVisualization(val number: Int) {
-    abstract val partOneOutputFlow: Flow<String>
+    val partOneOutputFlow
+    get() = _partOneOutputFlow.asStateFlow()
 
-    abstract val partTwoOutputFlow: Flow<String>
+    protected val _partOneOutputFlow = MutableStateFlow("")
 
-    abstract fun startPartOne(input: String, coroutineScope: CoroutineScope)
+    val partTwoOutputFlow
+    get() = _partTwoOutputFlow.asStateFlow()
 
-    abstract fun startPartTwo(input: String, coroutineScope: CoroutineScope)
+    protected val _partTwoOutputFlow = MutableStateFlow("")
+    private var job: Job? = null
+
+    fun startPartOne(input: String, coroutineScope: CoroutineScope) {
+        job?.cancel()
+        job = launchPartOneJob(input, coroutineScope)
+    }
+
+    protected abstract fun launchPartOneJob(input: String, coroutineScope: CoroutineScope): Job
+
+    fun startPartTwo(input: String, coroutineScope: CoroutineScope) {
+        job?.cancel()
+        job = launchPartTwoJob(input, coroutineScope)
+    }
+
+    protected abstract fun launchPartTwoJob(input: String, coroutineScope: CoroutineScope): Job
 
     @Composable
     abstract fun VisualizePartOne(modifier: Modifier)

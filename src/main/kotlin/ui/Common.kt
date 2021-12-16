@@ -2,18 +2,20 @@ package ui
 
 import ColorScheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 
 @Composable
 fun <T> DropDownList(
@@ -41,7 +43,7 @@ fun <T> DropDownList(
     }
 }
 @Composable
-fun ColorSchemeSelection(initialSelection: ColorScheme, onItemSelected: (ColorScheme) -> Unit) {
+fun ColorSchemeSelection(initialSelection: ColorScheme = ColorScheme.DEFAULT, onItemSelected: (ColorScheme) -> Unit) {
     val colorSchemeList = ColorScheme.values().toList()
     val text = remember { mutableStateOf(initialSelection.toString()) } // initial value
     val isOpen = remember { mutableStateOf(false) } // initial value
@@ -72,5 +74,27 @@ fun ColorSchemeSelection(initialSelection: ColorScheme, onItemSelected: (ColorSc
                     onClick = { isOpen.value = true }
                 )
         )
+    }
+}
+
+@Composable
+fun GridLayout(rows: Int,
+               cols: Int,
+               modifier: Modifier = Modifier,
+               backgroundColor: Color = Color.Black,
+               content: @Composable (Int, Int) -> Unit) {
+    Surface(
+        modifier = modifier,
+        color = backgroundColor
+    ) {
+        Column(verticalArrangement = Arrangement.SpaceEvenly) {
+            repeat(rows) { row ->
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    repeat(cols) { col ->
+                        content(row, col)
+                    }
+                }
+            }
+        }
     }
 }

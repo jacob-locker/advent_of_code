@@ -84,7 +84,6 @@ fun VisualizationLayout(title: String, viz: DayVisualization, showVisualization:
             }
         }
 
-
         if (vizPartOne.value == false) {
             VizOutputLayout(viz.partTwoOutputFlow)
             viz.VisualizePartTwo(modifier = Modifier.size(width = size, height = size))
@@ -129,7 +128,7 @@ fun DayLayout(day: BaseDay?, viz: DayVisualization?, dayNumber: Int, isEmpty: Bo
     if (day != null) {
         Button(onClick = {
             showVisualization.value = viz != null
-            executeDay(coroutineScope, day)
+            if (viz == null) executeDay(coroutineScope, day)
         }, modifier = modifier) {
             Text("${day.number}")
         }

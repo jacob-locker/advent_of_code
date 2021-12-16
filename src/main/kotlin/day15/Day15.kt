@@ -1,9 +1,11 @@
 package day15
 
 import BaseDay
-import getInputBlocks
 import getInputLines
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+
 
 class Day15 : BaseDay(15, "Chiton") {
     override suspend fun partOne(input: String) = solveDay15(input) { riskMap ->
@@ -17,13 +19,17 @@ class Day15 : BaseDay(15, "Chiton") {
         }
     }
 
-    private fun solveDay15(input: String, solver: (RiskMap) -> Int) = input.getInputLines().parseRiskMap().let(solver)
+    private fun solveDay15(input: String, solver: (RiskMap) -> Int) =
+        input.getInputLines().parseRiskMap().let { solver(it) }
 }
 
 fun List<String>.parseRiskMap() = RiskMap(map { it.map { char -> char.digitToInt() }.toIntArray() }.toTypedArray())
 
-data class RiskState(val risk: Int, val row: Int, val col: Int) : Comparable<RiskState> {
-    override fun compareTo(other: RiskState) = risk.compareTo(other.risk)
+data class RiskState(val row: Int, val col: Int) : Comparable<RiskState> {
+    var previousState: RiskState? = null
+    var risk = 0
+    var estimatedScore = 0
+    override fun compareTo(other: RiskState) = estimatedScore.compareTo(other.estimatedScore)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -42,10 +48,23 @@ data class RiskState(val risk: Int, val row: Int, val col: Int) : Comparable<Ris
     }
 }
 
-class RiskMap(private var grid: Array<IntArray>) {
+class RiskMap(var grid: Array<IntArray>) {
     companion object {
         const val MAX_VALUE = 9
+        val ZERO_HEURISTIC: (RiskState, RiskState) -> Int = { _, _ -> 0 }
+
+
+        val CHEBYSHEV_HEURISTIC: (RiskState, RiskState) -> Int = { currentState, goalState ->
+            max(abs(goalState.row - currentState.row), abs(goalState.col - currentState.col))
+        }
+
+        val MANHATTAN_HEURISTIC: (RiskState, RiskState) -> Int = { currentState, goalState ->
+            abs(goalState.row - currentState.row) + abs(goalState.col - currentState.col)
+        }
     }
+
+    val size = grid.size
+    val enteredList = mutableListOf<RiskState>()
 
     fun grow(size: Int) {
         grid = Array(grid.size * size) { row ->
@@ -63,19 +82,44 @@ class RiskMap(private var grid: Array<IntArray>) {
         startRow: Int = 0,
         startCol: Int = 0,
         endRow: Int = grid.size - 1,
-        endCol: Int = grid[0].size - 1
-    ): RiskState? {
-        val visited = mutableSetOf<RiskState>()
-        val queue = PriorityQueue<RiskState>()
-        getNeighbors(RiskState(0, startRow, startCol)).addUnseenToQueue(queue, visited)
+        endCol: Int = grid[0].size - 1,
+        heuristic: (RiskState, RiskState) -> Int = ZERO_HEURISTIC
+    ) : RiskState? {
+        val goal = RiskState(endRow, endCol)
 
-        while (queue.isNotEmpty()) {
-            val currentState = queue.remove()
-            if (currentState.row == endRow && currentState.col == endCol) {
-                return currentState
+        val open = PriorityQueue<RiskState>()
+        open.add(RiskState(startRow, startCol))
+
+        val openMap = Array(grid.size) { Array<RiskState?>(grid.size) { null } }
+        openMap[startRow][startCol] = RiskState(startRow, startCol)
+
+        val closedMap = Array(grid.size) { Array<RiskState?>(grid.size) { null } }
+
+        while (open.isNotEmpty()) {
+            val current = open.remove()
+            closedMap[current.row][current.col] = current
+            enteredList.add(current)
+            if (current == goal) {
+                return current
             }
 
-            getNeighbors(currentState).addUnseenToQueue(queue, visited)
+            getNeighbors(current).forEach { neighbor ->
+                val cost = current.risk + grid[neighbor.row][neighbor.col]
+                if (openMap[neighbor.row][neighbor.col] != null && cost < openMap[neighbor.row][neighbor.col]!!.risk) {
+                    open.remove(openMap[neighbor.row][neighbor.col])
+                    openMap[neighbor.row][neighbor.col] = null
+                }
+                if (closedMap[neighbor.row][neighbor.col] != null && cost < closedMap[neighbor.row][neighbor.col]!!.risk) {
+                    closedMap[neighbor.row][neighbor.col] = null
+                }
+                if (openMap[neighbor.row][neighbor.col] == null && closedMap[neighbor.row][neighbor.col] == null) {
+                    neighbor.risk = cost
+                    neighbor.estimatedScore = neighbor.risk + heuristic(neighbor, goal)
+                    neighbor.previousState = current
+                    open.add(neighbor)
+                    openMap[neighbor.row][neighbor.col] = neighbor
+                }
+            }
         }
 
         return null
@@ -90,20 +134,30 @@ class RiskMap(private var grid: Array<IntArray>) {
         toString().trim()
     }
 
-    private fun List<RiskState>.addUnseenToQueue(queue: Queue<RiskState>, visited: MutableSet<RiskState>) = forEach {
+    private fun List<RiskState>.addUnseenToQueue(
+        queue: Queue<RiskState>,
+        visited: MutableSet<RiskState>
+    ) = forEach {
         if (it !in visited) {
             visited.add(it)
             queue.add(it)
         }
     }
 
-    private fun getNeighbors(riskState: RiskState) =
+    private fun getNeighbors(state: RiskState) =
         mutableListOf<RiskState>().apply {
-            with(riskState) {
-                if (row > 0) add(RiskState(risk + grid[row - 1][col], row - 1, col))                // Up
-                if (row < grid.size - 1) add(RiskState(risk + grid[row + 1][col], row + 1, col))    // Down
-                if (col > 0) add(RiskState(risk + grid[row][col - 1], row, col - 1))                // Left
-                if (col < grid[0].size - 1) add(RiskState(risk + grid[row][col + 1], row, col + 1)) // Right
+            with(state) {
+                // Up
+                if (row > 0) add(RiskState(row - 1, col))
+
+                // Down
+                if (row < grid.size - 1) add(RiskState(row + 1, col))
+
+                // Left
+                if (col > 0) add(RiskState(row, col - 1))
+
+                // Right
+                if (col < grid[0].size - 1) add(RiskState(row, col + 1))
             }
         }
 }
