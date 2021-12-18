@@ -1,6 +1,7 @@
 package day16
 
 import BaseDay
+import java.util.*
 
 class Day16 : BaseDay(16, "Packet Decoder") {
     override suspend fun partOne(input: String) = input.hexToBinary()
@@ -23,7 +24,7 @@ class Day16 : BaseDay(16, "Packet Decoder") {
     override suspend fun partTwo(input: String) = input.hexToBinary().parsePacket().first.value
 }
 
-fun String.parsePacket(currentPosition: Int = 0): Pair<Packet, Int> {
+fun String.parsePacket(currentPosition: Int = 0, currentLevel: Int = 0): Pair<Packet, Int> {
     var position = currentPosition
     val header = extractHeader(position).also { position += 6 }
     val packet: Packet
@@ -39,7 +40,7 @@ fun String.parsePacket(currentPosition: Int = 0): Pair<Packet, Int> {
             var currentParsedLength = 0
             val subPackets = mutableListOf<Packet>().apply {
                 while (currentParsedLength < totalLengthOfSubPackets) {
-                    val (subPacket, newPosition) = parsePacket(position)
+                    val (subPacket, newPosition) = parsePacket(position, currentLevel + 1)
                     add(subPacket)
                     currentParsedLength += (newPosition - position)
                     position = newPosition
@@ -51,7 +52,7 @@ fun String.parsePacket(currentPosition: Int = 0): Pair<Packet, Int> {
             val numberOfSubPackets = substring(position, position + 11).toInt(2).also { position += 11 }
             val subPackets = mutableListOf<Packet>().apply {
                 repeat(numberOfSubPackets) {
-                    val (subPacket, newPosition) = parsePacket(position)
+                    val (subPacket, newPosition) = parsePacket(position, currentLevel + 1)
                     add(subPacket)
                     position = newPosition
                 }
@@ -61,7 +62,7 @@ fun String.parsePacket(currentPosition: Int = 0): Pair<Packet, Int> {
         }
     }
 
-    return Pair(packet, position)
+    return Pair(packet.apply { level = currentLevel }, position)
 }
 
 fun createOperatorPacket(header: Header, subPackets: List<Packet>) = when(header.type) {
@@ -133,10 +134,33 @@ enum class PacketType(val typeValue: Int) {
 data class Header(val version: Int, val type: PacketType)
 
 sealed class Packet(val header: Header) {
+    var level = 0
     abstract val value: Long
+    abstract val height: Int
+
+    val width: Int
+    get() {
+        val queue = LinkedList<Packet>().apply { add(this@Packet) }
+        var maxWidth = 1
+        while (queue.isNotEmpty()) {
+            val current = queue.remove()
+            if (current is OperatorPacket) {
+                if (current.subPackets.size > maxWidth) {
+                    maxWidth = current.subPackets.size
+                }
+                queue.addAll(current.subPackets)
+            }
+        }
+        return maxWidth
+    }
 }
-class LiteralPacket(header: Header, override val value: Long) : Packet(header)
-abstract class OperatorPacket(header: Header, val subPackets: List<Packet>) : Packet(header)
+class LiteralPacket(header: Header, override val value: Long) : Packet(header) {
+    override val height
+    get() = level
+}
+abstract class OperatorPacket(header: Header, val subPackets: List<Packet>) : Packet(header) {
+    override val height = subPackets.maxOf { it.height }
+}
 
 class SumPacket(header: Header, subPackets: List<Packet>): OperatorPacket(header, subPackets) {
     override val value = subPackets.sumOf { it.value }

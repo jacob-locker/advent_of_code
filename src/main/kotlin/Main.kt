@@ -118,17 +118,16 @@ fun VizOutputLayout(outputFlow: Flow<String>) {
 @Composable
 fun DayLayout(day: BaseDay?, viz: DayVisualization?, dayNumber: Int, isEmpty: Boolean = false) {
     val modifier = Modifier.size(128.dp).padding(top = 2.dp, bottom = 2.dp)
-    val coroutineScope = rememberCoroutineScope()
     val showVisualization = remember { mutableStateOf(false) }
-    if (showVisualization.value && viz != null) {
+    if (showVisualization.value) {
         UndecoratedWindowAlertDialogProvider.AlertDialog(onDismissRequest = { showVisualization.value = false }) {
-            VisualizationLayout(day?.title ?: viz.number.toString(), viz, showVisualization)
+            VisualizationLayout(day!!.title, viz ?: DefaultVisualization(day), showVisualization)
         }
     }
     if (day != null) {
         Button(onClick = {
-            showVisualization.value = viz != null
-            if (viz == null) executeDay(coroutineScope, day)
+            showVisualization.value = true
+            //if (viz == null) executeDay(coroutineScope, day)
         }, modifier = modifier) {
             Text("${day.number}")
         }
