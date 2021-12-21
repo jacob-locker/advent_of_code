@@ -49,7 +49,7 @@ class Day11Visualization : DayVisualization(11) {
                 octopusGrid.step()
                 gridFlow.value = octopusGrid
                 _partTwoOutputFlow.value = "Number of Steps: ${count++}"
-                delay(100)
+                delay(200)
             }
         }
 

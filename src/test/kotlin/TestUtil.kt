@@ -1,1 +1,1 @@
-fun String.parseTestLines() = split("\n")
+fun String.getTestLines() = split("\n")
