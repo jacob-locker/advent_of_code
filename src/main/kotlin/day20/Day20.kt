@@ -74,32 +74,6 @@ data class ImageAlgorithm(private val array: BooleanArray) {
     }
 }
 
-//class OtherImage(private val imageMap: Map<Pair<Int, Int>, Boolean>) {
-//
-//    fun applyAlgorithm(algorithm: ImageAlgorithm): OtherImage {
-//        val newImageMap = imageMap.toMutableMap()
-//        imageMap.forEach {
-//            getAlgorithmIndex(it.key.first, it.key.second)
-//        }
-//    }
-//
-//    private fun getAlgorithmIndex(row: Int, col: Int) =
-//        String(listOf(
-//            imageMap.getOrDefault(Pair(row - 1, col - 1), false),
-//            imageMap.getOrDefault(Pair(row - 1, col), false),
-//            imageMap.getOrDefault(Pair(row - 1, col + 1), false),
-//            imageMap.getOrDefault(Pair(row, col - 1), false),
-//            imageMap.getOrDefault(Pair(row, col), false),
-//            imageMap.getOrDefault(Pair(row, col + 1), false),
-//            imageMap.getOrDefault(Pair(row + 1, col - 1), false),
-//            imageMap.getOrDefault(Pair(row + 1, col), false),
-//            imageMap.getOrDefault(Pair(row + 1, col + 1), false)
-//        ).map { if (it) '1' else '0' }.toCharArray()
-//        )
-//            .toInt(2)
-//
-//}
-
 enum class ImageState {
     PERMA_BLACK,
     PERMA_WHITE,
@@ -107,13 +81,7 @@ enum class ImageState {
     WHITE_FLIP,
     UNKNOWN
 }
-// 5899 too high
-// 5479 incorrect
-// 5499 incorrect
-// 5537 incorrect
-// 5548 incorrect
-// 5567 incorrect
-// 5379 too low
+
 data class Image(private val values: Array<BooleanArray>, private val initialState: ImageState = ImageState.UNKNOWN) {
     var state = when(initialState) {
         ImageState.PERMA_BLACK -> ImageState.PERMA_BLACK
@@ -133,7 +101,7 @@ data class Image(private val values: Array<BooleanArray>, private val initialSta
                 ImageState.BLACK_FLIP
             }
         }
-        
+
         val defaultValue = state == ImageState.PERMA_WHITE || state == ImageState.WHITE_FLIP
         val paddedValues = values.padded(1, fillValue = defaultValue)
         val newValues = values.padded(1, fillValue = defaultValue)
