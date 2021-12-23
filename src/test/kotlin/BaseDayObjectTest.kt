@@ -2,7 +2,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.test.assertEquals
 
-abstract class BaseDayObjectTest(private val day: BaseDay,
+abstract class BaseDayObjectTest(protected val day: BaseDay,
                                 private val partOneSimpleExpected: Any? = null,
                                 private val partOneExpected: Any? = null,
                                 private val partTwoSimpleExpected: Any? = null,
